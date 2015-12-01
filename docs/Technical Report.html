@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="en" lang="en ng-app">
+	<head>
+		<title>MUXar - Technical Report</title>
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="description" content="">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0-rc4/angular-material.min.css"/>
+
+		<style type="text/css">
+			/**
+			 * Hide when Angular is not yet loaded and initialized
+			 */
+			[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+			  display: none !important;
+			}
+			
+			.tabsDynamicHeight md-content {
+				background-color: transparent !important; 
+			}
+			
+			.tabsDynamicHeight md-content md-tabs {
+				background: #f6f6f6;
+				border: 1px solid #e1e1e1; 
+			}
+			
+			.tabsDynamicHeight md-content md-tabs md-tabs-wrapper {
+				background: white; 
+			}
+			
+			.tabsDynamicHeight md-content h1:first-child {
+				margin-top: 0; 
+			}
+			
+			.center-text {
+				text-align: center;
+			}
+			
+			p {
+				text-indent: 50px;
+				padding : 0px 0px 5px 0px;
+				margin : 0px 0px 0px 0px;
+			}
+		</style>
+	</head>
+
+	<body data-ng-app="technical-report" layout="row" data-ng-cloak class="md-body-2">
+		<div ng-cloak style="width : 100%">
+			<md-content>
+				<md-tabs md-dynamic-height md-dynamic-width md-border-bottom>
+					<md-tab label="Title">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-1">MUXar - Using web semantics to provide music suggestions</h1>
+								<h2 style="padding-bottom : 30px"> Technical report </h2>
+								<hr/>
+							</div>
+							
+							<div>
+								<h2 style="padding-top : 30px; text-align: center">Abstract</h2>
+								<p>With the increase of web semantic use around the Internet, more and more websites use linked data to provide a better user experience, or use semantic markup to make them more accessible to search engines.</p>
+								<p>This technical report presents an approach to building a website that uses the advantages of web semantics to present users with music suggestions based on their preferences. The application will gather preliminary data from existing music services (e.g. <em>MixCloud</em>) and will display connections between this data and other musical entities using knowledge offered by linked data repositories (e.g. <em>DBpedia</em>).</p>
+								<p style="padding-top : 10px; padding-bottom : 20px"><strong>Keywords :</strong>  web semantics, sparql, rdf, music</p>
+								<hr/>
+							</div>
+							
+							<div>
+								<p style="padding-top: 20px">Project coordinator : <strong>Dr. Sabin-Corneliu Buraga</strong></p>
+								<p>Project members : </p>
+								<p><strong>Alexandru Iulian Cova&#351;&#259;</strong> - 2nd year Student, Master of Distributed Software Systems</p>
+								<p><strong>Corina Gabriela Cova&#351;&#259;</strong> - 2nd year Student, Master of Distributed Software Systems</p>
+								<p><strong>Sebastian-Lauren&#355;iu Plesciuc</strong> - 1st year Student, Master of Computer Software Engineering</p>
+								<p style="padding-top : 30px"><strong>Faculty of Computer Science,</strong>
+								<p><strong>"Alexandru Ioan Cuza" University of Ia&#351;i</strong></p>
+								<p style="padding-bottom : 30px">Academic year 2015-2016</p>
+							</div>
+						</md-content>
+					</md-tab>
+
+					<md-tab label="Introduction">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">1. Introduction</h1>
+								<hr/>
+							</div>
+							<p style="padding-top: 20px">The objective of this project is to create a system which will function as a web application that users will access from their PCs, laptops or mobile devices. This application will be able to run on any server or PaaS (e.g. <em>Amazon EC2</em>).</p>
+							<p>The end-user will have access to information and music suggestions based on their use of other musical services (e.g. <em>MixCloud</em>). The information presented will be enhanced by the MUXar application using linked data and semantic web technologies from external APIs.</p>
+							<p>In order to achieve the objective of building the <strong>Musical UX Smart Enhancer</strong> (MUXar) application, some software development considerations must be taken into account.</p>
+							<p>The development of this application aims to serve as an example that such applications that make use of web semantics, from an academical research standpoint, can be built. At most, this application will serve as prototype or reference for commercial applications. As such, this report will not cover a State-of-the-Art analysis.</p>
+							<p>However, the following sections of this document will discuss user requirements, the architecture of the application, the technologies and external services used.</p>
+						</md-content>
+					</md-tab>					
+					
+					<md-tab label="User Requirements">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">2. User Requirements</h1>
+								<hr/>
+							</div>
+							
+							<div>
+								<p style="padding-top: 20px">This section will address what operations we will expect the user to perform using the MUXar application. At least the application must be able to provide the following functionality :</p>
+								<ul>
+									<li>Allow the user to log into the website with an existing account from an existing music service (at least <em>MixCloud</em> or <em>Google Play Music</em>).</li>
+									<li>Allow the user to view suggestions based on playlist or history from their external accounts (songs/artists/albums that have connections to their listening habits).</li>
+									<li>Allow the user to search for music.</li>
+									<li>Allow the users to create and save a playlist on our website. (This might require the setup of an <em>Openlink Virtuoso</em> server to hold the data in RDF format).</li>
+								</ul>
+								
+								<p style="padding-top: 20px">Requirements that are influenced by limitations of external services :</p>
+								<ul>
+									<li>Allow the user to create playlist and synchronize it with their accounts on external services (e.g. save the playlist on their <em>MixCloud</em> account).</li>
+								</ul>
+							</div>
+							
+							<div>
+								<p style="padding-top: 20px; padding-bottom: 20px"> These requirements are reflected in the following Use-Case diagram with only <em>MixCloud</em> and <em>DBpedia</em> as external sources : </p>
+								<div class="center-text">
+									<img src="./images/use_case_wade.png"/>
+									<p style="padding-top: 20px"><em>Fig. 2.1. Use-Case Diagram</em></p>
+								</div>
+								
+								<p style="padding-top: 20px">The diagram shown in figure 2.1 describes which use case interacts with which entity. As such, the login and create playlist functions interact with the APIs that provide <strong>user</strong> information via simple HTTP requests. The search and suggestions functions provide <strong>music</strong> information via semantic web technologies (e.g.SPARQL). The Create playlist function is represented with dotted lines since the playlists are synchronized, if possible, with the user account on that particular website. Otherwise, the playlists are stored in RDF format in the projects Virtuoso server.</p>
+								
+							</div>
+						</md-content>
+					</md-tab>
+					
+					<md-tab label="Technologies">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">3. Technologies</h1>
+								<hr/>
+							</div>
+							<p>In order to accommodate the user requirements described in the previous sections, the technologies used must be chosen accordingly. From a software development standpoint, considerations regarding the time required to develop or other such criteria might be taken into account. However, for the purpose of this project, we will only focus on technologies that have been proven as suitable for web application development and that support the protocols required.</p>
+							<p>The front-end of this application will consist of an <em>Angular.js</em> controller that will handle user interactions and the communication with the MUXar web service. On this controller the user interface will be built with <em>Angular Material</em>.</p>
+							<p>On the back-end, the main controller of the application will be built using <em>Node.js</em> which has native server support for HTTP/HTTPS connections. Modules for <em>Node.js</em> that facilitate the development of this application will be used, some of the more important ones are <em>Passport.js</em> middleware for user authentication and <em>Express.js</em> middleware for routing. Other modules will be used as needed for <em>SPARQL</em> and <em>Redis</em> communication. A <em>Redis</em> store will be used to store user sessions and other data. Depending on how the requirements might change during development, the possibility of using an RDF store cannot be excluded. For this <em>Openlink Virtuoso</em> might be used.</p>
+						</md-content>
+					</md-tab>
+					
+					<md-tab label="Architecture">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">4. Architecture</h1>
+								<hr/>
+							</div>
+							<div>
+								<p style="padding-top: 20px; padding-bottom: 20px"> Using the technologies described in section 3, the following components diagram describes the application architecture : </p>
+								<div class="center-text">
+									<img src="./images/components_diagram.png"/>
+									<p style="padding-top: 20px"><em>Fig. 4.1. Components diagram</em></p>
+								</div>
+							</div>
+						</md-content>
+					</md-tab>
+					
+					<md-tab label="External Services">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">5. External Services</h1>
+								<hr/>
+							</div>
+							<p style="padding-top: 20px">For this project to satisfy the requirements specified in section 2 of this document, the application will have to rely on a number of external services in order to work. When this document was written, the most reliable sources were :</p>
+							<ul>
+								<li><strong>MixCloud</strong> - external service that allows users to listen to music created by independent artists and create playlists. Provides a web API that is documented and has good uptime. </li>
+								<li><strong>DBpedia</strong> - external service that provides linked data sets.</li>
+								<li><strong>Google Play Music</strong> - external service that allows user to listen to music, buy albums and create playlists. There is no official API but several unofficial APIs exist.</li>
+							</ul>
+
+							<p style="padding-top: 20px">Previously considered sources :</p>
+							<ul>
+								<li><strong>Last.fm</strong> - external beta service that allows users to listen to music and create playlists. It no longer provides API keys.</li>
+								<li><strong>Seevl.fm</strong> - external service that provides music discovery and personalization. Suffers from frequent downtime and very high response times.</li>
+								<li><strong>Freebase</strong> - external service that provides linked data sets. Has announced that it has become read-only since March 2015 and the API will be retired.</li>
+							<ul>
+						</md-content>
+					</md-tab>
+					
+					<md-tab label="Entities and relationships">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">6. Entities and relationships</h1>
+								<hr/>
+							</div>
+							<p style="padding-top: 20px">In order to link the data used in our application, a standard model for data representation must be chosen. The first step is to identify the main entities related to music :</p>
+							<div style="padding-left: 50px">
+								<ul>
+									<li>Song</li>
+									<li>Artist</li>
+									<li>Album</li>
+									<li>Concert</li>
+									<li>Composer</li>
+									<li>Event</li>
+									<li>Band</li>
+								</ul>
+							</div>
+							<p>For each of these entities, an appropriate model from schema.org  will be identified and used. The markup displayed by the website for each of the entities will identify with the semantic meaning associated for them and their properties as described by the <em>schema.org</em> vocabulary.</p>
+							<p style="padding-bottom : 30px">The properties of these entities that will be taken into account when providing suggestions are :</p>
+							<div style="padding-left: 50px">
+								<p>
+									<strong>Song</strong></td> <td></td>
+									<ul>
+										<li>name</li>
+										<li>artist</li>
+										<li>duration</li>
+										<li>genre</li>
+										<li>album</li>
+										<li>release date</li>
+										<li>composer</li>
+									</ul>
+								</p>
+								<p>
+									<strong>Artist</strong>
+									<ul>
+										<li>name</li>
+										<li>age</li>
+										<li>place of birth</li>
+										<li>no of albums</li>
+										<li>no of songs</li>
+										<li>no of concerts he attended</li>
+									</ul>
+								</p>
+								<p>
+									<strong>Album</strong>
+									<ul>
+										<li>title</li>
+										<li>release date</li>
+										<li>artist</li>
+										<li>[ songs ]</li>
+										<li>has received a special award</li>
+									</ul>
+								</p>
+								
+								<p>
+									<strong>Composer entity:</strong>
+									<ul>
+										<li>name</li>
+										<li>age</li>
+										<li>place of birth</li>
+										<li>is he also a singer</li>
+										<li>no of sings written</li>
+										<li>[ songs written ]In </li>
+									</ul>
+								</p>
+								
+								<p>
+									<strong>Concert entity:</strong>
+									<ul>
+										<li>location</li>
+										<li>date</li>
+										<li>[ artists/bands ]</li>
+										<li>duration</li>
+										<li>no of participants</li>
+									</ul>
+								</p>
+							</div>
+						</md-content>
+					</md-tab>
+					
+					<md-tab label="Conclusion">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">7. Conclusion</h1>
+								<hr/>
+							</div>
+							<p style="padding-top: 20px">This preliminary technical report serves as a reference for the requirements needed to undertake this project.</p>
+							<p>The details of this project and the code which implements it can be viewed at the this <a href="https://github.com/wadeproject/muxar_wade">Github page</a>.</p>
+							<p>Preliminary tests using technologies mentioned in this report can be found <a href="https://github.com/wadeproject/muxar_prototypes_test">here</a>.</p>
+						</md-content>
+					</md-tab>
+					
+					<md-tab label="References">
+						<md-content class="md-padding">
+							<div class="center-text">
+								<h1 class="md-display-2">8. References</h1>
+								<hr/>
+							</div>
+							<ul>
+								<li><a href="http://wiki.dbpedia.org/">DBpedia Wiki</a></li>
+								<li><a href="https://www.mixcloud.com/developers/">MixCloud Developer Documentation</a></li>
+								<li><a href="https://nodejs.org/en/docs/">Node.js Documentation</a></li>
+								<li><a href="https://docs.angularjs.org/guide">Angular.js Documentation</a></li>
+								<li><a href="https://github.com/jamon/playmusic">Unofficial Google Play Music API</a></li>
+								<li><a href="http://docs.openlinksw.com/virtuoso/">OpenLink Virtuoso Documentation</a></li>
+								<li><a href="http://schema.org/docs/documents.html">Schema.org Documentation</a></li>
+							</ul>
+						</md-content>
+					</md-tab>
+				</md-tabs>
+			</md-content>
+		</div>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-aria.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-route.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0-rc4/angular-material.min.js"></script>
+		
+		<script type="text/javascript">
+			angular.module('technical-report', ['ngMaterial']).config(function($mdThemingProvider) {
+				$mdThemingProvider.theme('default')
+					.primaryPalette('blue')
+					.accentPalette('blue');
+			});
+		</script>
+	</body>
+<html>
+
