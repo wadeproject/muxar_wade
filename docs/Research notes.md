@@ -164,3 +164,28 @@ select distinct ?song where {
 }
 ```
 
+#### Getting songs written by a specific artist
+```
+select ?song where {
+    ?song dbp:writer <http://dbpedia.org/resource/Robbie_Williams>;
+          rdf:type dbo:MusicalWork;
+          rdf:type dbo:Single.
+}
+```
+
+#### Getting an artists homepage 
+```
+select ?homepage where {
+    <http://dbpedia.org/resource/Robbie_Williams> foaf:homepage ?homepage.
+}
+```
+
+#### Getting all songs recorded in a particular location
+```
+select ?song where {
+    ?song dbp:recorded <http://dbpedia.org/resource/London>;
+          rdf:type dbo:MusicalWork;
+          rdf:type dbo:Single.
+}
+```
+
