@@ -1,12 +1,93 @@
 # WADE Project - Semantic Web notes
 
-`Work in progress`
-
 ## Virtuoso RDF Store Installation
 
 Latest builds seem to fail on MAC/Windows. Use docker installation from [here](https://github.com/tenforce/docker-virtuoso) instead.
 
 On MAC/Windows default endpoint for *POST* requests with `Content-Type: application/sparql-query` should be `http://192.168.99.100:8890/DAV`. The response format can be changed using the `Accept` header in the request, it can be `Accept: application/json`.
+
+### Tested queries
+
+These queries have been tested on using the form at `http://192.168.99.100:8890/sparql`. All queries should be linked to real URIs and the graph name should be the website domain. Favorite artists, albums or songs are represented as a `foaf:interest`. Our graph will contain the URI to the DBpedia resource and the type specified in the DBpedia ontology so that the URI can later be used to generate recommendations from the DBpedia graph.
+
+#### Inserting a username into the graph
+```
+insert data into <http://wadeproject.com/> {
+       <http://wadeproject.com/users/user1> foaf:name "user1".
+}
+```
+
+#### Selecting the user URI from the graph by username
+```
+select ?url from <http://wadeproject.com/> where {
+       ?url foaf:name ?name.
+       filter(regex(?name, "user1", "i"))
+} limit 1
+```
+
+#### Inserting interests for a user. A DBpedia resource describing an artist.
+```
+prefix dbo: <http://dbpedia.org/ontology/>
+
+insert data into <http://wadeproject.com/> {
+       <http://wadeproject.com/users/user1> foaf:interest <http://dbpedia.org/resource/Robbie_Williams>.
+       <http://dbpedia.org/resource/Robbie_Williams> rdf:type dbo:MusicalArtist.
+}
+```
+
+### Getting all artists a user has interest in.
+```
+prefix dbo: <http://dbpedia.org/ontology/>
+
+select ?artist from <http://wadeproject.com/> where {
+       <http://wadeproject.com/users/user1> foaf:interest ?artist.
+       ?artist rdf:type dbo:MusicalArtist.
+}
+```
+
+
+#### Inserting interests for a user. A DBpedia resource describing an album.
+```
+prefix dbo: <http://dbpedia.org/ontology/>
+
+insert data into <http://wadeproject.com/> {
+       <http://wadeproject.com/users/user1> foaf:interest <http://dbpedia.org/page/Greatest_Hits_%28Robbie_Williams_album%29>.
+       <http://dbpedia.org/page/Greatest_Hits_%28Robbie_Williams_album%29> rdf:type dbo:Album;
+            rdf:type dbo:MusicalWork.
+}
+```
+
+#### Getting all albums a user is interested in.
+```
+prefix dbo: <http://dbpedia.org/ontology/>
+
+select ?album from <http://wadeproject.com/> where {
+       <http://wadeproject.com/users/user1> foaf:interest ?album.
+       ?album rdf:type dbo:MusicalWork;
+              rdf:type dbo:Album.
+}
+```
+
+#### Inserting interests for a user. A DBpedia resource describing a song.
+```
+prefix dbo: <http://dbpedia.org/ontology/>
+
+insert data into <http://wadeproject.com/> {
+       <http://wadeproject.com/users/user1> foaf:interest <http://dbpedia.org/page/Radio_%28Robbie_Williams_song%29>.
+       <http://dbpedia.org/page/Radio_%28Robbie_Williams_song%29> rdf:type dbo:Single;
+            rdf:type dbo:MusicalWork.
+}
+```
+#### Getting all songs a user is interested in.
+```
+prefix dbo: <http://dbpedia.org/ontology/>
+
+select ?song from <http://wadeproject.com/> where {
+       <http://wadeproject.com/users/user1> foaf:interest ?song.
+       ?song rdf:type dbo:MusicalWork;
+              rdf:type dbo:Single.
+}
+```
 
 ## DBpedia
 
