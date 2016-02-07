@@ -1,0 +1,620 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "MUXar (Musical UX Smart Enhancer)",
+        "description": "REST API description",
+        "contact": {
+            "name": "Muxar dev team",
+            "email": "muxar.wade@gmail.com",
+            "url": "http://muxar.blogspot.it/"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "http://opensource.org/licenses/MIT"
+        }
+    },
+    "basePath": "/api",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/api/login":
+        {
+          "post": {
+                "summary": "LogIn",
+                "description": "Log in with GPlay account.",
+                "operationId": "login",
+                "produces": [
+                    "application/json",
+                ],
+                "parameters": [ {
+                        "in": "body",
+                        "name": "body",
+                        "description": "login details",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "login success",
+                    },
+                    "500": {
+                       "description": "internal server error",
+                        "schema": {
+                            }
+                    }
+                }
+            }
+          
+        },
+        "/api/logout":
+        {
+          "post": {
+                "summary": "LogOut",
+                "description": "Log out from app.",
+                "operationId": "logout",
+                "produces": [
+                    "application/json",
+                ],
+                "responses": {
+                    "200": {
+                        "description": "login success",
+                    },
+                    "500": {
+                       "description": "internal server error",
+                        "schema": {
+                            }
+                    }
+                }
+            }
+          
+        },
+        "/api/favorites": {
+            "get": {
+                "description": "Returns a lists of favorites songs",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "artists response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/song"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request",
+                        "schema": {
+                            }
+                    },
+                    "401": {
+                       "description": "unauthorized access",
+                        "schema": {
+                            }
+                    },
+                    "404": {
+                       "description": "resource not found",
+                        "schema": {
+                            }
+                    },
+                    "500": {
+                       "description": "internal server error",
+                        "schema": {
+                            }
+                    }
+                }
+            }
+        },
+        "/api/genres": {
+            "get": {
+                "description": "return a list of all genres which exists on DBPedia",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of genres",
+                        "schema": {
+                            "$ref": "#/definitions/genre"
+                        }
+                    },
+                    "400": {
+                       "description": "bad request",
+                        "schema": {
+                            }
+                    },
+                    "401": {
+                       "description": "unauthorized access",
+                        "schema": { 
+                            }
+                    },
+                    "404": {
+                       "description": "resource not found",
+                        "schema": {
+                            }
+                    },
+                    "500": {
+                       "description": "internal server error",
+                        "schema": {
+                            }
+                    }
+                }
+            }
+        },
+        "/api/interests/artists": {
+            "get": {
+                "description": "Returns a lists of favorites artists",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of artists that user is interested in",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/artist"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/interests/albums": {
+            "get": {
+                "description": "Returns a lists of favorites albums",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of albums that user is interested in",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/album"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/recommendation/associatedbands": {
+            "get": {
+                "description": "Returns a lists of associated bands for the input artist",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [ {
+                        "in": "query",
+                        "name": "artist",
+                        "description": "artist",
+                        "required": true,
+                        "type":"string"
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of artists uri",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type":"string"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/recommendation/commonsongs": {
+            "get": {
+                "description": "Returns a lists of songs uri that 2 artists have in common",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [ {
+                        "in": "query",
+                        "name": "artist1",
+                        "description": "artist",
+                        "required": true,
+                        "type": "string"
+                        
+                },
+                {
+                        "in": "query",
+                        "name": "artist2",
+                        "description": "artist",
+                        "required": true,
+                        "type": "string"
+                        
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of song uri ",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/song"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/recommendation/songsbygenre": {
+            "get": {
+                "description": "Returns a lists of songs uri written by the specified artist and that have the given genre",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [ {
+                        "in": "query",
+                        "name": "artist",
+                        "description": "artist",
+                        "required": true,
+                        "type": "string"
+                        
+                },
+                {
+                        "in": "query",
+                        "name": "genre",
+                        "description": "genre",
+                        "required": true,
+                        "type": "string"
+                        
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of song uri ",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/song"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/recommendation/writtenby": {
+            "get": {
+                "description": "Returns a lists of songs uri written by the specified artist",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [ {
+                        "in": "query",
+                        "name": "artist",
+                        "description": "artist",
+                        "required": true,
+                        "type": "string"
+                        
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of song uri ",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/song"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/interests/songs": {
+            "get": {
+                "description": "Returns a lists of favorites songs",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of songs that user is interested in",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/song"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/playlists": {
+            "get": {
+                "description": "Returns a list of playlists",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "playlists",
+                        "schema": {
+                            "$ref": "#/definitions/playlist"
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/api/playlistsentries": {
+            "get": {
+                "description": "Returns a list of songs contained in all playlists",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "all songs from playlists",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/songFromPlaylist"
+                            }
+                        }
+                    },
+                    "400": {
+                       "description": "bad request"
+                    },
+                    "401": {
+                       "description": "unauthorized access"
+                    },
+                    "404": {
+                       "description": "resource not found"
+                    },
+                    "500": {
+                       "description": "internal server error"
+                    }
+                }
+            }
+          },
+        "/api/search": {
+            "get": {
+                "description": "Returns a list of songs",
+                "produces": [
+                    "application/json"
+                ],
+               "parameters": [ {
+                        "in": "query",
+                        "name": "search",
+                        "description": "search filter",
+                        "required": true,
+                        "type": "string"
+                        
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "songs response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/songFromPlaylist"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "artist": {
+            "type": "object",
+            "required": [
+                "artistUri"
+            ],
+            "properties": {
+                "artistUri": {
+                    "type": "string"
+                }
+            }
+        },
+        "album": {
+            "type": "object",
+            "required": [
+                "albumUri"
+            ],
+            "properties": {
+                "albumUri": {
+                    "type": "string"
+            }
+          }
+        },
+        "song": {
+            "type": "object",
+            "required": [
+                "songUri"
+            ],
+            "properties": {
+                "songUri":
+                {
+                  "type": "string"
+                }
+            }
+        },
+        "playlist": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "user":
+        {
+           "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                   "type": "string"
+                }
+            }
+        },
+        "genre":
+        {
+           "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "songFromPlaylist":
+        {
+           "type": "object",
+            "required": [
+                "songId",
+                "playlistId",
+                "title",
+                "artist",
+                "album"
+            ],
+            "properties": {
+                "songId": {
+                    "type": "string"
+                },
+                "playlistId": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "artist": {
+                    "type": "string"
+                },
+                "album": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

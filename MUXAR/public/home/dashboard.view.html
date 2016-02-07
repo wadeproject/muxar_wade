@@ -1,0 +1,314 @@
+<div layout="row">
+	<div ng-include="'../home/sidebar.fragment.html'"></div>
+
+	<div layout="column" class="relative" layout-fill role="main">
+		<md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="vm.showAdd($event)">
+			<ng-md-icon icon="add"/>
+		</md-button>
+		<data ng-init="data.selectedIndex= '0'" />
+
+		<div ng-include="'../home/toolbar.fragment.html'"></div>
+
+		<md-content flex md-scroll-y>
+			<ui-view layout="column" layout-fill layout-padding>
+				<div class="inset" hide-sm></div>
+				<ng-switch on="data.selectedIndex" class="tabpanel-container">
+					<div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" md-swipe-left="next()" md-swipe-right="previous()" layout="row" layout-align="center center">
+						<md-card flex-gt-sm="90" flex-gt-md="80">
+							<md-card-content>
+								<md-list>
+									<md-item ng-repeat="playlistItem in vm.playlists | filter:search">
+										<md-item-content>
+											<md-card flex-gt-sm="90" flex-gt-md="95">
+												<md-card-content>
+													<div class="md-tile-left inset" hide-sm>
+														<user-avatar/>
+													</div>
+													<div class="md-tile-content">
+														<h3>{{playlistItem.name}}</h3>
+													</div>
+												
+													<div>
+														<md-button aria-label="Open Settings" ng-click="vm.showPlaylistMenu($event)">
+															<ng-md-icon icon="more_vert"/>
+														</md-button>
+													</div>
+											<md-list>
+												<md-item ng-repeat="elementItem in vm.playlistsentries | filter:search | orderBy:'-what'">
+												<div ng-if="elementItem.plId == playlistItem.id ">
+											        <md-item-content>
+														<div class="md-tile-content">
+															<h3>{{elementItem.title}}</h3>
+															<h4>{{elementItem.artist}}</h4>
+															<p>{{elementItem.album}}</p>
+														</div>
+														<div>
+															<md-button aria-label="Open Settings" ng-click="vm.showSongMenu($event)">
+																<ng-md-icon icon="more_vert"/>
+															</md-button>
+														</div>
+													</md-item-content>
+													<md-divider md-inset hide-sm ng-if="!$last"/>
+													<md-divider hide-gt-sm ng-if="!$last"/>
+											    </div>
+													
+												</md-item>
+											</md-list>
+											
+											
+											</md-card-content>
+											</md-card>
+										</md-item-content>
+										<md-divider md-inset hide-sm ng-if="!$last"/>
+										<md-divider hide-gt-sm ng-if="!$last"/>
+									</md-item>
+									<md-divider/>
+									<md-item>
+												<md-item-content>
+													<md-card flex-gt-sm="90" flex-gt-md="95">
+														<md-card-content>
+															<div class="md-tile-content">
+																<h3>Favorites</h3>
+															</div>
+															<md-list>
+															<md-item ng-repeat="item in vm.favorites | filter:search | orderBy:'-what'">
+																<md-item-content>
+																	<div class="md-tile-left inset" hide-sm>
+																		<img ng-src="{{item.image}}" alt="Description" viewBox="0 0 128 128" height="64" width="64" pointer-events="none" display="block" />
+																	</div>
+																	<div class="md-tile-content">
+																		<h3>{{item.title}}</h3>
+																		<h4>{{item.artist}}</h4>
+																		<p>{{item.album}}</p>
+																	</div>
+																	<div>
+																		<md-button aria-label="Open Settings" ng-click="vm.showSongMenu($event)">
+																			<ng-md-icon icon="more_vert"/>
+																		</md-button>
+																	</div>
+																</md-item-content>
+																<md-divider md-inset hide-sm ng-if="!$last"/>
+																<md-divider hide-gt-sm ng-if="!$last"/>
+															</md-item>
+														</md-list>
+														
+													</md-card-content>
+													</md-card>
+												</md-item-content>
+												<md-divider md-inset hide-sm ng-if="!$last"/>
+												<md-divider hide-gt-sm ng-if="!$last"/>
+											</md-item>
+								</md-list>
+							</md-card-content>
+						</md-card>
+					</div>
+
+					<!-- Search -->
+					<div role="tabpanel" id="tab2-content" aria-labelledby="tab2" ng-switch-when="1" md-swipe-left="next()" md-swipe-right="previous()" layout="row" layout-align="center center">
+						<md-card flex-gt-sm="90" flex-gt-md="80">
+							<md-card-content>
+								<form class="well form-search">
+									<label>Search:</label>
+									<input type="text" ng-model="vm.searchKey" class="input-medium search-query" placeholder="Keywords...">
+									<button type="submit" ng-disabled="form.$invalid" class="btn" ng-click="vm.search()">Search</button>	
+							    </form>
+							
+								<md-list>
+									<md-item ng-repeat="item in vm.searchresults | filter:search | orderBy:'-what'">
+										<md-item-content>
+											<div class="md-tile-left inset" hide-sm>
+												<img ng-src="{{item.image}}" alt="Description" viewBox="0 0 128 128" height="64" width="64" pointer-events="none" display="block" />
+											</div>
+											<div class="md-tile-content">
+												<h3>{{item.title}}</h3>
+												<h4>{{item.artist}}</h4>
+												<p>{{item.album}}</p>
+											</div>
+											<div>
+												<md-button aria-label="Open Settings" ng-click="vm.showSongMenu($event)">
+													<ng-md-icon icon="more_vert"/>
+												</md-button>
+											</div>
+										</md-item-content>
+										<md-divider md-inset hide-sm ng-if="!$last"/>
+										<md-divider hide-gt-sm ng-if="!$last"/>
+									</md-item>
+								</md-list>
+							</md-card-content>
+						</md-card>
+					</div>
+
+					<!-- Interests -->
+					<div role="tabpanel" id="tab3-content" aria-labelledby="tab3" ng-switch-when=2 md-swipe-left="next()" md-swipe-right="previous()" layout="row"  layout-align="center center">
+						<md-card flex-gt-sm="90" flex-gt-md="80">
+							<md-card-content>
+								<md-list> 
+									<md-item>
+										<md-item-content>
+											<!-- Artists -->
+											<md-card flex-gt-sm="90" flex-gt-md="80">
+												<md-card-content>
+												<h2>Artists</h2>
+													<md-list>
+														<md-item ng-repeat="item in vm.interests.artists | filter:search">
+															<md-item-content>
+
+																<div class="md-tile-left inset" hide-sm>
+																	<user-avatar/>
+																</div>
+																<div class="md-tile-content">
+																	<h3>{{item}}</h3>
+																</div>
+																<div>
+																	<md-button aria-label="Open Settings" ng-click="vm.showArtistMenu($event)">
+																		<ng-md-icon icon="more_vert"/>
+																	</md-button>
+																</div>
+															</md-item-content>
+															<md-divider md-inset hide-sm ng-if="!$last"/>
+															<md-divider hide-gt-sm ng-if="!$last"/>
+														</md-item>
+													</md-list>
+												</md-card-content>
+											</md-card>
+										</md-item-content>
+									</md-item>
+									<md-item>
+										<md-item-content>
+											<!-- Songs -->
+											<md-card flex-gt-sm="90" flex-gt-md="80">
+												<md-card-content>
+													<h2>Songs</h2>
+													<md-list>
+														<md-item ng-repeat="item in vm.interests.songs | filter:search">
+															<md-item-content>
+
+																<div class="md-tile-left inset" hide-sm>
+																	<user-avatar/>
+																</div>
+																<div class="md-tile-content">
+																	<h3>{{item}}</h3>
+																</div>
+																<div>
+																	<md-button aria-label="Open Settings" ng-click="vm.showSongMenu($event)">
+																		<ng-md-icon icon="more_vert"/>
+																	</md-button>
+																</div>
+															</md-item-content>
+															<md-divider md-inset hide-sm ng-if="!$last"/>
+															<md-divider hide-gt-sm ng-if="!$last"/>
+														</md-item>
+													</md-list>
+												</md-card-content>
+											</md-card>
+										</md-item-content>
+									</md-item>
+									<md-item>
+										<md-item-content>
+											<!-- Albums -->
+											<md-card flex-gt-sm="90" flex-gt-md="80">
+												<md-card-content>
+													<h2>Albums</h2>
+													<md-list>
+														<md-item ng-repeat="item in vm.interests.albums | filter:search">
+															<md-item-content>
+																<div class="md-tile-left inset" hide-sm>
+																	<user-avatar/>
+																</div>
+																<div class="md-tile-content">
+																	<h3>{{item}}</h3>
+
+																</div>
+																<div>
+																	<md-button aria-label="Open Settings" ng-click="vm.showAlbumMenu($event)">
+																		<ng-md-icon icon="more_vert"/>
+																	</md-button>
+																</div>
+															</md-item-content>
+															<md-divider md-inset hide-sm ng-if="!$last"/>
+															<md-divider hide-gt-sm ng-if="!$last"/>
+														</md-item>
+													</md-list>
+												</md-card-content>
+											</md-card>
+										</md-item-content>
+									</md-item>
+								</md-list>
+							</md-card-content>
+						</md-card>
+					</div>
+
+					<!-- Recommendations -->
+					<div role="tabpanel" id="tab4-content" aria-labelledby="tab4" ng-switch-when=3  md-swipe-left="next()" md-swipe-right="previous()" layout="row" layout-align="center center">
+						<md-card flex-gt-sm="90" flex-gt-md="80">
+							<md-card-content>
+								<md-list> 
+									<md-item>
+										<md-item-content>
+											<!-- Artists -->
+											<md-card flex-gt-sm="90" flex-gt-md="80">
+												<md-card-content>
+												<h2>Artists</h2>
+													<md-list>
+														<md-item ng-repeat="item in vm.recommendations.artists | filter:search">
+															<md-item-content>
+
+																<div class="md-tile-left inset" hide-sm>
+																	<user-avatar/>
+																</div>
+																<div class="md-tile-content">
+																	<h3>{{item}}</h3>
+																</div>
+																<div>
+																	<md-button aria-label="Open Settings" ng-click="vm.showArtistMenu($event)">
+																		<ng-md-icon icon="more_vert"/>
+																	</md-button>
+																</div>
+															</md-item-content>
+															<md-divider md-inset hide-sm ng-if="!$last"/>
+															<md-divider hide-gt-sm ng-if="!$last"/>
+														</md-item>
+													</md-list>
+												</md-card-content>
+											</md-card>
+										</md-item-content>
+									</md-item>
+									<md-item>
+										<md-item-content>
+											<!-- Songs -->
+											<md-card flex-gt-sm="90" flex-gt-md="80">
+												<md-card-content>
+													<h2>Songs</h2>
+													<md-list>
+														<md-item ng-repeat="item in vm.recommendations.songs | filter:search">
+															<md-item-content>
+
+																<div class="md-tile-left inset" hide-sm>
+																	<user-avatar/>
+																</div>
+																<div class="md-tile-content">
+																	<h3>{{item}}</h3>
+																</div>
+																<div>
+																	<md-button aria-label="Open Settings" ng-click="vm.showSongMenu($event)">
+																		<ng-md-icon icon="more_vert"/>
+																	</md-button>
+																</div>
+															</md-item-content>
+															<md-divider md-inset hide-sm ng-if="!$last"/>
+															<md-divider hide-gt-sm ng-if="!$last"/>
+														</md-item>
+													</md-list>
+												</md-card-content>
+											</md-card>
+										</md-item-content>
+									</md-item>
+								</md-list>
+							</md-card-content>
+						</md-card>
+					</div>
+				</ng-switch>
+			</ui-view>
+		</md-content>
+	</div>
+</div>
