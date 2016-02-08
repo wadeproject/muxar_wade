@@ -18,6 +18,7 @@
 				method : "GET",
 				url : "/api/interests/artists"
 			}).then(function mySucces(response) {
+				console.log(response);
 				callbackOK(response.data);
 			}, function myError(response) {
 				callbackERR(response.statusText);

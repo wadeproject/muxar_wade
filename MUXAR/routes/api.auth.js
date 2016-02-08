@@ -83,9 +83,9 @@ router.route('/login').post(function(req, res) {
 			getUserUri(config.email, function(data) {
 				var obj = JSON.parse(data);
 				var userUriTmp = "";
-				if (obj.results.bindings[0] && obj.results.bindings[0] !== 'undefined' && typeof obj.results.bindings[0] !== "undefined") {
-					var userUriTmp = obj.results.bindings[0].url.value;
-					if (!userUriTmp && userUriTmp !== 'undefined' && typeof userUriTmp === "undefined") {
+				if (obj.results.bindings && obj.results.bindings.length > 0) {
+					userUriTmp = obj.results.bindings[0].url.value;
+					if (!userUriTmp || userUriTmp === undefined || typeof userUriTmp === "undefined") {
 						insertUserUri(config.email);
 						userUriTmp = 'http://wadeproject.com/users/' + config.email;
 					}

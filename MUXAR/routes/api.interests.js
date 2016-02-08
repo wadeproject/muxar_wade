@@ -13,6 +13,7 @@ router.route('/interests/artists').get(function(req, res) {
 	       <' + req.session.userUri + '> foaf:interest ?artist.\
 	       ?artist rdf:type dbo:MusicalArtist.\
 	}';
+	console.log(query);
 	var auth = 'Basic ' + new Buffer('dav' + ':' + 'dav').toString('base64');
 	request({
 		url : 'http://192.168.99.100:8890/DAV',

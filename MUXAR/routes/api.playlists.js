@@ -11,7 +11,6 @@ router.route('/playlists').get(function(req, res) {
 		email : config.email,
 		password : config.password
 	}, function(err, resp) {
-		console.log(err, resp);
 	});
 
 	pm.init(config, function(err) {
@@ -53,12 +52,17 @@ router.route('/playlistsentries').get(function(req, res) {
 			for (var index = 0; index < data.data.items.length; ++index) {
 				var item = data.data.items[index];
 				console.log(item);
+				var img = "";
+				if (item.track.artistArtRef && item.track.artistArtRef.length>0){
+					img = item.track.artistArtRef[0].url;
+				}
 				var songEntry = {
 					plId : item.playlistId,
 					songId : item.id,
 					title : item.track.title,
 					artist : item.track.artist,
 					album : item.track.album,
+					image : img
 				}
 				entries.push(songEntry);
 			}

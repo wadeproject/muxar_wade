@@ -22,7 +22,6 @@ function getArtistURI(artist, callback) {
 	var client = new SparqlClient(endpoint);
 	client.query(query).execute(function(error, results) {
 		console.log("GET ART URI");
-		console.log(results);
 		callback(error, error ? null : results.results.bindings[0].person.value);
 		// if (!results.results.bindings && results.results.bindings !==
 		// 'undefined' && !(typeof results.results.bindings !== "undefined")) {
@@ -45,7 +44,6 @@ function getTrackURI(trackName, artistUri, callback) {
 	var client = new SparqlClient(endpoint);
 	client.query(query).execute(function(error, results) {
 		console.log("GET TR URI");
-		console.log(results);
 		callback(error, error ? null : results.results.bindings[0].song.value);
 		// if (!results.results.bindings && results.results.bindings !==
 		// 'undefined' && !(typeof results.results.bindings === "undefined")) {
@@ -68,7 +66,6 @@ function getAlbumURI(albumName, artistUri, callback) {
 	var client = new SparqlClient(endpoint);
 	client.query(query).execute(function(error, results) {
 		console.log("GET AL URI");
-		console.log(results);
 		callback(error, error ? null : results.results.bindings[0].album.value);
 		// if (!results.results.bindings && results.results.bindings !==
 		// 'undefined' && typeof results.results.bindings !== "undefined") {

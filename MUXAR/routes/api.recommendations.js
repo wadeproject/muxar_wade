@@ -54,7 +54,6 @@ router.route('/recommendation/writtenby').get(function(req, res) {
 				} limit 10';
 	var client = new SparqlClient(endpoint);
 	client.query(query).execute(function(error, results) {
-		console.log(results);
 		return res.json(results);
 	});
 });

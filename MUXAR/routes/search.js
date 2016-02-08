@@ -12,12 +12,11 @@ router.route('/search').get(function(req, res) {
 		email : config.email,
 		password : config.password
 	}, function(err, resp) {
-		console.log(err, resp);
 	});
 
 	pm.init(config, function(err) {
 		if (err) {
-			return console.log("error", err);
+			return;
 		}
 		pm.search(ss, 25, function(err, data) {
 			var songs = data.entries.sort(function(a, b) {
@@ -25,7 +24,6 @@ router.route('/search').get(function(req, res) {
 			});
 			return res.json(songs);
 		}, function(message, body, err, httpResponse) {
-			console.log(message);
 		});
 
 	});

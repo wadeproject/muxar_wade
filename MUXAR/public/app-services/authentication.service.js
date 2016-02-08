@@ -50,6 +50,7 @@
 				}
 				callback(response);
 			});
+			return;
 		}
 
 		function SetCredentials(username, password) {

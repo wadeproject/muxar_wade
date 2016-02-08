@@ -15,8 +15,8 @@
 		$mdThemingProvider.theme('input', 'default').primaryPalette('grey');
 	});
 
-	DashboardController.$inject = [ 'AuthenticationService', 'SearchService', 'UtilsService', 'UserService', 'PlaylistService', 'InterestsService', 'RecommendationsService', 'ContextualMenuService', 'FavoritesService', 'GenreService', '$rootScope', '$mdDialog', '$cookieStore', '$location', '$mdBottomSheet', '$q' ];
-	function DashboardController(AuthenticationService, SearchService, UtilsService, UserService, PlaylistService, InterestsService, RecommendationsService, ContextualMenuService, FavoritesService, GenreService, $rootScope, $mdDialog, $cookieStore, $location, $mdBottomSheet, $q) {
+	DashboardController.$inject = [ '$http', 'AuthenticationService', 'SearchService', 'UtilsService', 'UserService', 'PlaylistService', 'InterestsService', 'RecommendationsService', 'ContextualMenuService', 'FavoritesService', 'GenreService', '$rootScope', '$mdDialog', '$cookieStore', '$location', '$mdBottomSheet', '$q' ];
+	function DashboardController($http, AuthenticationService, SearchService, UtilsService, UserService, PlaylistService, InterestsService, RecommendationsService, ContextualMenuService, FavoritesService, GenreService, $rootScope, $mdDialog, $cookieStore, $location, $mdBottomSheet, $q) {
 		var vm = this;
 		vm.username = $cookieStore.get("email");
 		vm.searchKey = "";
@@ -70,7 +70,6 @@
 					};
 					vm.playlists.push(pl);
 				}
-				console.log(vm.playlists);
 			});
 		}
 
@@ -84,11 +83,11 @@
 						plId : r.plId,
 						title : r.title,
 						artist : r.artist,
-						album : r.album
+						album : r.album,
+						image : r.image
 					};
 					vm.playlistsentries.push(entry);
 				}
-				console.log(vm.playlistsentries);
 			});
 		}
 		function loadFavorites() {
@@ -108,6 +107,8 @@
 		}
 
 		function loadInterests() {
+
+			console.log("Load Interests");
 			var defer = $q.defer();
 
 			InterestsService.GetArtists(function(res) {
@@ -137,16 +138,26 @@
 
 		function loadRecommendations() {
 			var artists = vm.interests.artists;
-			for (var idx = 0; idx < artists.length; idx++) {
-				var artist = artists[idx];
-				RecommendationsService.GetAssociatedBands(artist, function(res) {
+			var idx1 = UtilsService.Random(0, artists.length);
+			var idx2 = UtilsService.Random(0, artists.length);
+			RecommendationsService.GetAssociatedBands(artists[idx1], function(res) {
+				if (res.results.bindings) {
 					for (var idx = 0; idx < res.results.bindings.length; idx++) {
 						vm.recommendations.artists.push(res.results.bindings[idx].bands.value);
 					}
-				});
-			}
-			var idx1 = UtilsService.Random(0, artists.length);
-			var idx2 = UtilsService.Random(0, artists.length);
+				}
+			});
+			RecommendationsService.GetAssociatedBands(artists[idx2], function(res) {
+				if (res.results.bindings) {
+					for (var idx = 0; idx < res.results.bindings.length; idx++) {
+						vm.recommendations.artists.push(res.results.bindings[idx].bands.value);
+					}
+				}
+			});
+
+			console.log(vm.recommendations.artists);
+			idx1 = UtilsService.Random(0, artists.length);
+			idx2 = UtilsService.Random(0, artists.length);
 			var artist1 = artists[idx1];
 			var artist2 = artists[idx2];
 			RecommendationsService.GetCommonSongs(artist1, artist2, function(res) {
@@ -192,16 +203,15 @@
 		}
 
 		vm.logout = function() {
-			AuthenticationService.Logout(function(response) {
-				if (response.success) {
+			$http.post('/api/logout', {}).success(function(response) {
+				if (response.status === 200) {
 					AuthenticationService.ClearCredentials();
 					$location.path('/login');
 				} else {
-					FlashService.Error(response.message);
-					vm.dataLoading = false;
+					$location.path('/');
 				}
 			});
-		}
+		};
 
 		vm.search = function() {
 			vm.searchresults = [];
